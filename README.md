@@ -28,6 +28,9 @@ A **Proof of Concept** multi-agent system built with the [Google Agent Developme
 | **Tools Agent** | Sub-Agent + Tools | Weather lookups & COP→USD conversion |
 | **SQL Expert** | Sub-Agent (LLM Skill) | Writes, debugs & optimizes SQL queries |
 | **Customer Service** | Sub-Agent (LLM Skill) | Handles support for "TiendaCool" e-commerce |
+| **Car Repair Expert** | Sub-Agent (ADK Skill) | Automotive diagnostics with knowledge base |
+| **Multimodal Fun** | Sub-Agent + Tools | Jokes, GIFs, memes, and creative content |
+| **Audio Live** | Sub-Agent (Gemini Live API) | Real-time audio streaming & voice conversations |
 
 ## 📋 Prerequisites
 
@@ -35,17 +38,27 @@ A **Proof of Concept** multi-agent system built with the [Google Agent Developme
 - [Google AI Studio API key](https://aistudio.google.com/apikey) (Primary model)
 - [OpenAI API key](https://platform.openai.com/api-keys) (Backup/Fallback model)
 
-## ⚡ Running Locally (TL;DR)
+## ⚡ Running Locally (Step-by-Step)
 
 ```bash
-# Install dependencies
+# 1. Create virtual environment
+python -m venv .venv
+
+# 2. Activate virtual environment
+# On macOS/Linux:
+source .venv/bin/activate
+# On Windows:
+# .venv\Scripts\activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# Configure your API keys in .env file
+# 4. Configure your API keys in .env file
+# Edit .env and add:
 # GOOGLE_API_KEY=your_key_here
 # OPENAI_API_KEY=your_key_here
 
-# Start the ADK web interface
+# 5. Start the ADK web interface
 adk web
 ```
 
@@ -136,6 +149,13 @@ Select **`multi_agent_poc`** from the agent dropdown to start chatting!
 > "Write a dad joke about electric cars."
 > "Give me a 'doge' meme about AI taking over the world."
 > "Analyze this image [attach image] and make a funny meme about it."
+
+### 🎙️ Audio Live Agent (Gemini Live API)
+> "I want to have a voice conversation" *(Enables real-time audio chat)*
+> "Transcribe this audio file for me" *[attach audio file]*
+> "Can you respond to me with voice?" *(Audio output generation)*
+> "Listen to this voice message and tell me what it says" *[attach voice message]*
+> "I want to practice my Spanish pronunciation" *(Voice-based language learning)*
 
 ### 🔄 Multi-Agent / Orchestration (Advanced)
 > "Tell me the weather in Bogota, then show me a funny GIF about it."
@@ -250,7 +270,8 @@ PoC_adk/
         ├── sql_expert_agent.py  # SQL expert (LLM skill)
         ├── customer_service_agent.py  # Customer support (LLM skill)
         ├── car_repair_agent.py  # Car repair expert (ADK Skill)
-        └── multimodal_fun_agent.py  # Jokes, GIFs, memes (Multimodal)
+        ├── multimodal_fun_agent.py  # Jokes, GIFs, memes (Multimodal)
+        └── audio_live_agent.py  # Real-time audio streaming (Gemini Live API)
 ```
 
 ## 🔑 Key Concepts Demonstrated
@@ -260,10 +281,11 @@ PoC_adk/
 3. **LLM Skills** — SQL Expert and Customer Service agents use only prompt engineering (no tools)
 4. **ADK Skills** — Car Repair Expert uses the `SkillToolset` feature with file-based skill definitions (`SKILL.md` + `references/`)
 5. **LLM-Driven Delegation** — Gemini reads sub-agent descriptions and routes autonomously
-6. **Agnostic LLM & Fallback** — Centralized model configuration using `LiteLlm` with primary (Gemini) and backup (GPT-4) support.
+6. **Agnostic LLM & Fallback** — Centralized model configuration using `LiteLlm` with primary (Gemini) and backup (GPT-4) support
 7. **Session State** — Tools save results via `ToolContext.state`, agents read/write via `output_key`, enabling cross-agent data sharing
 8. **Multimodal Fun** — `multimodal_fun_agent` handles creative tasks and multimodal input (jokes/GIFs/memes)
-9. **ADK Web UI** — `adk web` provides a chat interface for testing
+9. **Audio Streaming** — `audio_live_agent` uses Gemini Live API for real-time audio conversations and voice interactions
+10. **ADK Web UI** — `adk web` provides a chat interface for testing
 
 ## 📚 Resources
 

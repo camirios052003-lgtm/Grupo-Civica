@@ -1,4 +1,4 @@
-google-adk>=1.0.0
+google-adk==1.29.0
 python-dotenv>=1.0.0
 litellm
 openai

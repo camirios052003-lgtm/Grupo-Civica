@@ -9,23 +9,23 @@ coordinator that delegates user requests to the appropriate specialist:
   • sql_expert_agent       → SQL queries, database design, optimization
   • customer_service_agent → e-commerce customer support (TiendaCool)
   • car_repair_agent       → automotive diagnostics, repair & maintenance
+  • audio_live_agent       → real-time audio streaming with Gemini Live API
 """
 
 from google.adk.agents import Agent
 
 # ── Import model & sub-agents ────────────────────────────────────────────
 from multi_agent_poc.model import agnostic_model
-from multi_agent_poc.sub_agents.tools_agent import tools_agent
-from multi_agent_poc.sub_agents.sql_expert_agent import sql_expert_agent
-from multi_agent_poc.sub_agents.customer_service_agent import customer_service_agent
-from multi_agent_poc.sub_agents.car_repair_agent import car_repair_agent
-from multi_agent_poc.sub_agents.multimodal_fun_agent import multimodal_fun_agent
+from multi_agent_poc.sub_agents.factory import create_all_sub_agents
+
+# Create fresh sub-agent instances
+sub_agents = create_all_sub_agents(agnostic_model)
 
 
 # ── Root Orchestrator ────────────────────────────────────────────────────
 root_agent = Agent(
     name="orchestrator",
-    model=agnostic_model,
+    model=agnostic_model,  # Gemini 2.5 Flash for reliable text chat
     description="Root orchestrator that delegates to specialist sub-agents.",
     instruction=(
         "You are the **main orchestrator** of a multi-agent system. "
@@ -64,6 +64,13 @@ root_agent = Agent(
         "   - Finding GIFs or memes\n"
         "   - Analyzing multimedia (images, audio) to create jokes or memes\n"
         "   - Fun and creative interactions\n\n"
+        "6. **audio_live_agent** — Use this when the user asks about:\n"
+        "   - Real-time audio conversations\n"
+        "   - Voice input/output interactions\n"
+        "   - Audio transcription or analysis\n"
+        "   - Voice-based Q&A\n"
+        "   - Processing audio files or recordings\n"
+        "   - Multilingual voice interactions\n\n"
         "## Multi-Step Request Handling (CRITICAL):\n"
         "- If a user's request involves MULTIPLE topics that span different "
         "specialists, YOU MUST break the request into separate steps.\n"
@@ -86,11 +93,5 @@ root_agent = Agent(
         "- Present the final combined answer to the user in a clear and friendly way.\n"
         "- You may handle simple greetings and small talk without delegation."
     ),
-    sub_agents=[
-        tools_agent,
-        sql_expert_agent,
-        customer_service_agent,
-        car_repair_agent,
-        multimodal_fun_agent,
-    ],
+    sub_agents=sub_agents,  # Fresh instances created by factory
 )
